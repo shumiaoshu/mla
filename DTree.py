@@ -10,6 +10,7 @@ class TreeNode:
         self.next_nodes = {}
         self.alternative_features = None # 可选择分支特征，包括自己
         self.father = None
+        self.value = None
         self.samples = []
 
 class DecisionTree:
@@ -29,9 +30,11 @@ class DecisionTree:
 
     def get_root(self):
         rootNode = TreeNode()
-        rootNode.samples = self.data
+        rootNode.samples = list(range(len(self.data)))
         rootNode.alternative_features = self.str_features
-
+        gini = {}
+        for feature in rootNode.alternative_features:
+            gini[feature] = self.cal_gini(rootNode,feature)
 
 
     def parsedata(self):
@@ -44,8 +47,29 @@ class DecisionTree:
         self.str_features = [feature for feature in self.features if feature not in self.num_value_features]
         self.data = dataf
 
-    def cal_gini(self):
-        pass
+    def cal_gini(self,node:TreeNode,feature):
+        pro_samples = self.statistic(node,feature)
+
+
+    def statistic(self,node:TreeNode,feature):
+        pro_sample = {}
+        for s in node.samples:
+            serial = self.data.loc[s][:]
+            pro = serial[feature]
+            label = serial[self.label]
+            label_tmp_dict = pro_sample.get(pro,{})
+            if label_tmp_dict is {}:
+                label_tmp_dict[label] = 1
+            else:
+                label_tmp_dict[label] = label_tmp_dict[label] + 1
+            pro_sample[pro] = label_tmp_dict
+        return pro_sample
+    def gini(self,*x):
+        s = sum(x)
+        g = 1
+        for xi in x:
+            g = g - xi/s
+        return g
 
     def pred(self,samples):
         pass
