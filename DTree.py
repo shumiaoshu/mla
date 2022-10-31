@@ -58,10 +58,7 @@ class DecisionTree:
             pro = serial[feature]
             label = serial[self.label]
             label_tmp_dict = pro_sample.get(pro,{})
-            if label_tmp_dict is {}:
-                label_tmp_dict[label] = 1
-            else:
-                label_tmp_dict[label] = label_tmp_dict[label] + 1
+            label_tmp_dict[label] = label_tmp_dict.get(label,0) + 1
             pro_sample[pro] = label_tmp_dict
         return pro_sample
     def gini(self,*x):
